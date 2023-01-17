@@ -31,8 +31,9 @@ In Oracle Cloud Management (web site)
 ## Create HR Schema
 
 1. Connect to the DB as HR (This was tested with SQL Developer 20.1)
-1. run `01_admin_create_users.sql`
+1. run `02_hr_install.sql`
    - note - should have zero errors
+ 1. `grant db_emp to *apex workspace*`
 
 ## Install APEX App
 
@@ -44,8 +45,8 @@ In Oracle Cloud Management (web site)
 ## Create APEX Users
 
 1. you should still be logged in to your APEX Workspace
-1. create the user `..`  with password  `Change0nInstall`
-1. create the user `..`  with password  `Change0nInstall`
+1. create the user `daustin`  with password  `Change0nInstall`
+1. create the user `smavris`  with password  `Change0nInstall`
 
 ## Test App
 
