@@ -9,7 +9,7 @@ Each folder goes through one concept within the combined APEX-RAS framework.
 
 Order | Folder | Description
 ---|---|---
-1 | [RAS HR Demo](./RAS HR Demo/README.md) | RAS HR Demo from the [Oracle documentation](https://docs.oracle.com/en/database/oracle/oracle-database/21/dbfsg/real-application-security-hr-demo.html)
+1 | [RAS HR Demo](./RAS%20HR%20Demo/README.md) | RAS HR Demo from the [Oracle documentation](https://docs.oracle.com/en/database/oracle/oracle-database/21/dbfsg/real-application-security-hr-demo.html)
 2 | Namespaces | Explaination and examples of RAS Namespace
 3 | RAS HR with Namespace | Rework of the base RAS HR Demo using Namespaces
 4 | External Users | Simplified APEX demo using External RAS Users
