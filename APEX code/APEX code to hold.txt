@@ -1,0 +1,93 @@
+workspace: Internal as ADMIN
+enable RAS
+
+Shared Components -> Security Attributes -> Source for Role or Group Schemes === "Authentication Scheme"
+
+begin
+  xs_principal.create_dynamic_role( 'registered' );
+  xs_principal.create_dynamic_role( 'unregistered' );
+end;
+/
+
+
+procedure enable_roles
+as
+begin
+    apex_authorization.enable_dynamic_groups(
+        p_group_names => apex_t_varchar2( upper('registered'), lower('unregistered'))
+    );
+end;
+-----
+-- bulk create users and dynamic roles
+declare
+    workspace_name constant varchar2(50)  := 'workspace_name';
+    common_email   constant varchar2(300) := 'donotreply@mydomain.com';
+    workspace_id            number;
+    group_id                number;
+begin
+    l_workspace_id := apex_util.find_security_group_id( workspace_name );
+
+    apex_util.set_security_group_id(l_workspace_id);
+
+    for rec in (select * from hr.employees)
+    loop
+        apex_util.create_user(p_user_name           => rec.email,
+                              p_email_address       => common_email,
+                              p_web_password        => common_password,
+                              p_change_password_on_first_use => 'N'
+                             );
+    end loop;
+
+    for rec in (select replace( d.department_name, ' ', '_' ) || '_role' role_name from hr.departments)
+    loop
+        xs_principal.create_dynamic_role( rec.role_name );
+    end loop;
+
+    xs_principal.create_dynamic_role( 'not_an_employee' );    -- role if not found in EMPLOYEES
+    xs_principal.create_dynamic_role( 'accessing_via_apex' ); -- role to indicate framework (required due 2 bug)
+ end;
+/
+
+create role cbac_sees_all;
+grant role cbac_sees_all to hr with delegate option;
+
+-- HR
+create or replace
+function dept_name2role( dept_name in varchar2) return varchar2
+  deterministic
+  authid current_user
+as
+begin
+    return upper( replace( dept_name, ' ', '_' ) || '_role' );
+end;
+/
+
+create or replace
+function enable_role
+  authid current_user
+as
+	dept_name hr.department.department_name%type;
+begin
+    select d.department_name
+        into dept_name
+    from hr.employees e
+         join hr.departments on (e.department_id=d.department_id)
+    where e.email = xs_sys_context( upper( 'xs$session' ), 'username' );
+
+    apex_authorization.enable_dynamic_groups(
+        p_group_names => apex_t_varchar2( upper( 'employee_role' )
+                                         ,upper( 'department_role' )
+                                         ,upper( hr.dept_name2role( dept_name ) )
+                                        )
+    );
+exception
+    when no_data_found then
+        apex_authorization.enable_dynamic_groups(
+            p_group_names => apex_t_varchar2( upper( 'not_an_employee' ) )
+        );
+    when too_many_rows then
+        apex_debug.error( 'Too many employees named "%s"', xs_sys_context( upper( 'xs$session' ), 'username' ) );
+        apex_authorization.enable_dynamic_groups(
+            p_group_names => apex_t_varchar2( upper( 'not_an_employee' ) )
+        );
+end;
