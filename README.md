@@ -1,55 +1,25 @@
-# APEX-RAS-Cloud
-APEX  RAS Demo for Oracle Cloud Free Tier
+APEX-RAS Examples for Cloud
+===
 
-This will install the RAS Demo code on Oracle Cloud Free Tier and sample  APEX app.
+These examples were tested on Oracle Cloud (OCI) ATP Free Tier 21c.
 
-# INSTALLITION
+Some examples invoke CVE-2023-21829. The patch for this bug was made available in a CPU that was released on 17-January-2023 for the 19c and 21c versions of the Oracle Database.
 
-Overview
+Each folder goes through one concept within the combined APEX-RAS framework.
 
-1. create system
-1. install schema with RAS Rules
-1. install APEX APP
-1. create APEX  users
+Order | Folder | Description
+---|---|---
+1 | [RAS HR Demo](./RAS%20HR%20Demo/README.md) | RAS HR Demo from the [Oracle documentation](https://docs.oracle.com/en/database/oracle/oracle-database/21/dbfsg/real-application-security-hr-demo.html)
+2 | Namespaces | Explaination and examples of RAS Namespace
+3 | RAS HR with Namespace | Rework of the base RAS HR Demo using Namespaces
+4 | External Users | Simplified APEX demo using External RAS Users
+5 | Parameterized ACL | Base RAS HR Demo using Parametereized ACLs
+6 | External Roles | RAS HR Demo using External Roles & Namespaces (🐜 prevents usability)
 
-##  Create System
+# Common APEX Prep Steps
 
-In Oracle Cloud Management (web site)
+1. ensure RAS is enabaled on the Instance
+1. Ensure Dynamic Roles are available for the application
+1. Create APEX Users
+   - A few examples come with a script for creating them in bulk.
 
-1. create atp free  tier database
-   - note ADMIN  password
-1. get wallet
-   - note location of wallet
-   - note password for wallet
-1. create APEX workspace
-   - note workspace name
-   - note password
-   - note URL
-1. (opt)create DB Connnection for ADMIN in SQL Developer
-1. (opt)create DB Connnection for HR in SQL Developer
-
-## Create HR Schema
-
-1. Connect to the DB as HR (This was tested with SQL Developer 20.1)
-1. run `02_hr_install.sql`
-   - note - should have zero errors
- 1. `grant db_emp to *apex workspace*`
-
-## Install APEX App
-
-1. log into your APEX Workspace as your workspace administrator (refer to the URL you recorded)
-1. install the apex app `03_admin_install_apex_app`
-   -  note  there should be no errors
-1. do not log out just yet
-
-## Create APEX Users
-
-1. you should still be logged in to your APEX Workspace
-1. create the user `daustin`  with password  `Change0nInstall`
-1. create the user `smavris`  with password  `Change0nInstall`
-
-## Test App
-
-URL should be in this format:
-
-`https://*db_instance*.*region*.oracecloud.com/ords/f?p=hr_demo`
