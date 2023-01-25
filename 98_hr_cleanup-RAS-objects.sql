@@ -1,4 +1,4 @@
- REM run this as ADMIN to cleanup and RAS objects
+ REM run this as HR to cleanup and RAS objects
  REM this is used for all examples
  
 -- common policy
