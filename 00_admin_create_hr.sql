@@ -1,0 +1,20 @@
+create user hr identified by Change0nInstall
+default tablespace  data
+quota  20  M on data
+account unlock;
+
+grant connect, resource, create view to hr;
+
+
+-- RAS Privileges for
+--
+-- ADMIN_SEC_POLICY | allows user to create policies
+-- APPLY_SEC_POLICY | allows user to apply a policy to a table
+-- ADMIN_ANY_SEC_POLICY | allows user to debug policy
+-- ADMIN_ANY_NAMESPACE | allows the user to ignore ACL restriction for constrained Namespaces
+-- PROVISION | (unverified) something with Principals
+-- CALLBACK | allows uset to create Global Callback
+
+exec sys.xs_admin_cloud_util.grant_system_privilege('ADMIN_ANY_SEC_POLICY','HR');
+
+

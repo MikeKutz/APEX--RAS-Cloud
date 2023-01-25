@@ -3,7 +3,7 @@ APEX  RAS Demo for Oracle Cloud Free Tier
 
 This will install the RAS Demo code on Oracle Cloud Free Tier and sample  APEX app.
 
-# INSTALLITION
+# INSTALLATION
 
 Overview
 

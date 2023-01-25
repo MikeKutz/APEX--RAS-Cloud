@@ -16,9 +16,9 @@ On the extreme end, the system privilege `ADMIN_ANY_NAMESPACE` allows the princi
 Like any other `ANY` privilege, you should limit its grants.
 
 ## Privilege Requirements
-The requirement for the Privilege to be a concatination ( bit AND[`&`] ) of privileges still applies.
+The requirement for the Privilege to be an intersect ( ∩ ) of privileges still applies.
 
-That is:  `Actual Privilege := DB Privilege & ACL Privilege & Security Class Privilege`
+That is:  `Actual Privilege := DB Privilege ∩ ACL Privilege ∩ Security Class Privilege`
 
 - `PUBLIC` already has the required DB Privileges to make and modify Namespaces
 - The ACL should have `MODIFY_NAMESPACE` (to create the namespace) and `MODIFY_ATTRIBUTE` (to update its values).

@@ -1,14 +1,11 @@
-# Advance RAS HR Demo
+# RAS HR Demo with Namespace
 In this demonstration, we will enhance the Oracle Documentation HR Demo example my use of Namespaces and Global Callbacks.
 
 As a reminder, RAS is like VPD on steroids
 - use Namespaces instead of a `context`
 - use `xs_sys_contex` instead of `sys_context`
-- use Global Callbacks instead of Logon Triggers
+- use Global Callbacks instead of Logon Triggers (skip for this demo)
 - unlike VPD, values remain across stateless calls (eg APEX Pages) for the same RAS Session
-
-## Prerquisites
-It is assumed that you have gone through the RAS HR Demo Example.  This demo picks up after the testing but before any cleanup codes have been ran.
 
 ## Department Specific Security
 The `it_role` is specific for the IT Department (`department_id=60`). Instead, we want to generalize this to be the department assigned at the creation of the RAS Session (`department_id=xs_sys_context('hr$session','department_id')`)
@@ -34,19 +31,14 @@ With RAS, Namespaces are used instead of `context`s.
 
 The security of the Namespace can be limited to assigning an ACL when you create the Namespace Template. Once done, only the Principal of that ACL can modify its attributes.  A DB Role is used as the Principal which, in turn, will be applied to the initialization procedure (CBAC)
 
-To start, the HR account will need a RAS Privilege in order to create and manage namespaces.
-```sql
--- if on OCI, as ADMIN, only run
-exec sys.xs_admin_cloud_util.grant_system_privilege('ADMIN_NAMESPACE','HR');
--- otherwise, as a DBA, only run
-exec sys.xs_admin_util.grant_system_privilege('ADMIN_NAMESPACE','HR');
-```
-
-Now, we create the role to use for CBAC and assign it to HR.
+First, create the role for use CBAC and assign it to HR.
 ```sql
 -- as a DBA ( on OCI: ADMIN)
-create role cbac_ns_role;
-grant cbac_ns_role to HR with delegate option;
+-- create role cbac_ns_role;
+create role see_all_employees_role;
+create role ns_modifier_role;
+grant see_all_employees_role to HR with delegate option;
+grant ns_modifier_role to HR with delegate option;
 ```
 
 Since we are going to limit which Principals can modify the Namespace, we need to create the ACL.

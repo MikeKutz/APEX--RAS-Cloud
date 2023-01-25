@@ -1,4 +1,4 @@
--- related to 1607572 : ACL check follow through to Next procedure
+-- related to S1607572 [CVE-2023-21829]: ACL check follow through to Next procedure
 exec hr.init_pass_no_cbac;
 exec hr.init_pass;
 exec hr.init_fail;
