@@ -29,3 +29,39 @@ Order | Folder | Description
 1. Create APEX Users
    - A few examples come with a script for creating them in bulk.
 
+## Enable RAS on Instance
+
+1. Login to the APEX instance Workspace INTERNAL as user ADMIN.  (password is the DB password)
+2. browse to `Real Application Security`
+3. set `Allow Real Application Security` to `Yes`
+
+## Enable Dynamic Roles (opt)
+
+This step is only needed for using RAS External Roles
+
+1. Login to your Workspace with developer privileges
+1. Within your application, click `Shared Components`
+1. Under the `Security` section, click on `Security Attributes`
+1. Browse to `Authorization` section
+1. Set `Source for Role or Group Schemes` to `Authentication Scheme`
+
+## Enable RAS in APP
+
+RAS is enabled in indivual `Authentication Scheme` (Shared Component)
+
+- `Source -> PL/SQL Code` allows for procedure definitions
+- `Lodin Processing -> Post-Authentication Procedure Name` is where you set the "RAS Session Initialization
+
+Things to do within Post-Authentication:
+- initialize P0 Item values
+- create & initialize Namespaces
+- modify value for `APP_USER`
+- enable/disable Dynamic Roles
+
+## Create APEX Users
+
+The Authentication Scheme defines if RAS is used (or not) and how.
+
+For this demo, an `Oracle APEX Account` scheme is used.  As such, APEX users will need to be created.
+
+(goal: bulk script for all `HR.EMPLOYEES.EMAIL` )
