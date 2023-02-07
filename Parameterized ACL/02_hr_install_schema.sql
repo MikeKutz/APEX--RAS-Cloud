@@ -44,7 +44,7 @@ begin
     realm_constraint_list  => realms,
     column_constraint_list => cols);
 
-  -- -- -- -- -- -- -- -- -- --
+  -- -- Add parameters to be used within Policy
   sys.xs_data_security.create_acl_parameter(
            policy => 'employees_ds',
            parameter => 'dept_id',
@@ -99,10 +99,6 @@ begin
                            policy => 'employees_ds' ,
                            parameter => 'dept_id',
                            value => 60); -- number
---   sys.xs_acl.add_acl_parameter(acl => 'it_acl',
---                           policy => 'employees_ds' ,
---                           parameter => 'view_sal',
---                           value => 'no'); -- number
 
    sys.xs_acl.add_acl_parameter(acl => 'hr_acl',
                            policy => 'employees_ds',

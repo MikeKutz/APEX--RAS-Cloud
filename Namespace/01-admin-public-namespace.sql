@@ -1,13 +1,5 @@
 -- ADMIN
 
-prompt creating DB user: HR
-create user hr identified by Change0nInstall
-default tablespace  data
-quota  20  M on data
-account unlock;
-
-grant connect, resource, create view to hr;
-
 prompt creating RAS Internal w/ Direct: daustin
 exec  sys.xs_principal.create_user(name => 'daustin', schema => 'hr');
 exec  sys.xs_principal.set_password('daustin', 'Change0nInstall');

@@ -19,14 +19,18 @@ exec sys.xs_admin_cloud_util.grant_system_privilege('ADMIN_ANY_SEC_POLICY','HR')
 
 alter session set current_schema = hr;
 
-@@./db-sample-schemas/humab_resources/hr_cre.sql
-@@./db-sample-schemas/humab_resources/hr_popul.sql
+@@./db-sample-schemas/human_resources/hr_cre.sql
+@@./db-sample-schemas/human_resources/hr_popul.sql
 
 Rem      hr_dn_c.sql - Add DN column to HR.EMPLOYEES and DEPARTMENTS
-@@./db-sample-schemas/humab_resources/hr_dn_c.sql
+@@./db-sample-schemas/human_resources/hr_dn_c.sql
 
 -- remove extra code
 drop trigger update_job_history;
 drop trigger secure_employees;
 drop procedure add_job_history;
 drop procedure secure_dml;
+
+-- common DB Roles
+create role db_emp;
+grant select, insert, update, delete on hr.employees to db_emp; 

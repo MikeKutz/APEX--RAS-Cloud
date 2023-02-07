@@ -1,12 +1,5 @@
 prompt creating HR
 
-create user hr identified by Change0nInstall
-default tablespace  data
-quota  20  M on data
-account unlock;
-
-grant connect, resource, create view to hr;
-
 -- create a Policy
 --exec sys.xs_admin_cloud_util.grant_system_privilege('ADMIN_SEC_POLICY','HR');
 -- apply a Policy to a TABLE

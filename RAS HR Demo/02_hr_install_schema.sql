@@ -1,9 +1,3 @@
-@hr_cre.sql
-@hr_popul.sql
-
-grant select, insert, update, delete on hr.employees to db_emp; 
-grant select on hr.employees to cbac_role;
-
 declare
 begin
   sys.xs_security_class.create_security_class(

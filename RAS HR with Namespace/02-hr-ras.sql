@@ -1,6 +1,3 @@
--- hr_cre.sql
--- hr_popul.sql
-
 -- grants for `see_all_employees_role
 grant read on hr.employees to see_all_employees_role;
 
@@ -14,7 +11,6 @@ begin
 
   sys.xs_security_class.create_security_class(
     name        => 'hr_ns_privileges', 
-                              -- sys.NSTEMPLATE_SC
     parent_list => xs$name_list('sys.nstemplate_sc'),
     priv_list   => xs$privilege_list());
 end;
