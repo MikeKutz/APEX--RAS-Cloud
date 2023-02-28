@@ -61,18 +61,18 @@ tbd | - | APEX Login for RAS External - Not yet tested
 
  Catagory | Description
 ---|---
- General | RAS adds a layer of "deny,allow" rules for RLS and Column Security on top of classic DB privileges
-ℹGeneral | RAS adds a Virtual Session on top of a DB Session but before the application(eg APEX) session.  The application attaches/detaches the Virtual Session to the DB Session that is grabbed from a pool of DB Sessions
+ XGeneral | RAS adds a layer of "deny,allow" rules for RLS and Column Security on top of classic DB privileges
+XGeneral | RAS adds a Virtual Session on top of a DB Session but before the application(eg APEX) session.  The application attaches/detaches the Virtual Session to the DB Session that is grabbed from a pool of DB Sessions
  RAS | You can `grant` up (DB to RAS) but not down (RAS to DB)
- RAS | ACE Principals prefer Roles over Users
- RAS | ACE Principal can be a DB Role; including DB Roles used for CBAC
- RAS | Privilege available is an intersection of: `DB Privilege ∩ ACL Privilege ∩ Security Class`
- RAS | Initialize a RAS Session (Direct Login) via Global Callback
- APEX | Initialize the RAS Session via `Post-Authentication Procedure`
+ XRAS | ACE Principals prefer Roles over Users
+ XRAS | ACE Principal can be a DB Role; including DB Roles used for CBAC
+ XRAS | Privilege available is an intersection of: `DB Privilege ∩ ACL Privilege ∩ Security Class`
+ RAS | Initialize a RAS Session (for Direct Login) via Global Callback
+ XAPEX | Initialize the RAS Session via `Post-Authentication Procedure`
  APEX | Ensure RAS is enabled for the Instance
- APEX | For dynamic roles, ensure they are enable for the Application `Security Attributes -> Authorization -> Source`
- APEX | `RAS Mode -> Enable Internal` requires a RAS User whose name matches USER_ID
- APEX | you can adjust the `USER_ID` in the `Post-Authentication Procedure` with `apex_custom_auth.set_user()`
+ ?APEX | For dynamic roles, ensure they are enable for the Application `Security Attributes -> Authorization -> Source`
+ XAPEX | `RAS Mode -> Enable Internal` requires a RAS User whose name matches USER_ID
+XAPEX | you can adjust the `USER_ID` in the `Post-Authentication Procedure` with `apex_custom_auth.set_user()`
 
 ## List of Bugs
 
@@ -90,9 +90,9 @@ Flag | Description
 Flag | Catagory | bug id | Description
 ---|---|---|---
 ❗ | CBAC+RAS | CVE-2023-21829 | ACL privileges granted to code (CBAC) is not revoked on exit of code. patch is available in the CPU released on 17-Jan-2023. (19c, 21c)
-⚠️ | APEX | - | A hiccup can occur in APEX if a RAS Session can not be completely created
-⚠️ | APEX | - | `RAS Mode -> Enable External` requires at least 1 enabled dynamic role (possible 🐜)
-🐜 | OCI | - | the view dba_xs_privilege_grants is incorrect (possibly OCI specific)
+⚠️ | APEX | - | A hiccup can occur in APEX if a RAS Session can not be completely created causing DoS
+⚠️ | APEX | - | `RAS Mode -> Enable External` requires at least 1 enabled dynamic role (this is may be a 🐜)
+🐜 | OCI | - | the view `dba_xs_privilege_grants` is incorrect (possibly OCI specific)
 🐜 | RAS | - | Data Dictionary View for Global Callbacks is missing (not just undocumented)
 🐜 | CBAC | - | A code's granted role (CBAC) can be lost on `create or replace`
 🐜 | RAS | - | make sure your Namespace is UPPER (for non xs$session namespaces) when you call `xs_sys_context`
