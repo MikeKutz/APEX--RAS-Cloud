@@ -15,10 +15,10 @@ Individual `README.md` files (and code comments) will note other known bugs with
 
 # Menu
 
-- Arvailable Demos (2)
-- Common APEX Prep Steps (3)
-- RAS Basics (1)
-- List of Bugs and Headaches (4)
+- Arvailable Demos
+- Common APEX Prep Steps
+- RAS Basics
+- List of Bugs and Headaches
 
 # Available Demos
 
@@ -31,7 +31,7 @@ Order | Folder | Description
 3 | [RAS HR with Namespace](./RAS%20HR%20with%20Namespace/README.md) | Rework of the base RAS HR Demo using Namespaces (& GC)
 4 | [Parameterized ACL](./Parameterized%20ACL/README.md) | Base RAS HR Demo using Parametereized ACLs
 5 | [Dynamic Roles](./Dynamic%20Roles/README.md) | APEX Application demonstrating the use of RAS External users and dynamic application roles
-7 | [External Roles](./External%20Roles/README.md) | RAS HR Demo using External Roles & Namespaces (🐜 prevents usability)
+7 | [External Roles](./External%20Roles/README.md) | RAS HR Demo using External Roles & Namespaces
 8 | LDAP RAS | (planned) RAS using LDAP DN
 9 | LDAP APEX | (planned) RAS+APEX using LDAP DN
 
@@ -42,13 +42,13 @@ Order | Folder | Description
 1. Create APEX Users
    - A few examples come with a script for creating them in bulk.
 
-(note: add screenshots)
-
 ## Enable RAS on Instance
 
 1. Login to the APEX instance Workspace INTERNAL as user ADMIN.  (password is the DB password)
 2. browse to `Real Application Security`
 3. set `Allow Real Application Security` to `Yes`
+
+{image}
 
 ## Enable Dynamic Roles (opt)
 
@@ -60,12 +60,15 @@ This step is only needed for using RAS External Roles
 1. Browse to `Authorization` section
 1. Set `Source for Role or Group Schemes` to `Authentication Scheme`
 
+{image}
+
+
 ## Enable RAS in APP
 
 RAS is enabled in indivual `Authentication Scheme` (Shared Component)
 
 - `Source -> PL/SQL Code` allows for procedure definitions
-- `Lodin Processing -> Post-Authentication Procedure Name` is where you set the "RAS Session Initialization
+- `Login Processing -> Post-Authentication Procedure Name` is where you set the "RAS Session Initialization
 
 Things to do within Post-Authentication:
 - initialize P0 Item values
@@ -73,44 +76,51 @@ Things to do within Post-Authentication:
 - modify value for `APP_USER`
 - enable/disable Dynamic Roles
 
+{image}
+
 ## Create APEX Users
 
 The Authentication Scheme defines if RAS is used (or not) and how.
 
-For this demo, an `Oracle APEX Account` scheme is used.  As such, APEX users will need to be created.
+For this demo, an `Oracle APEX Account` scheme is used for most of the examples.  As such, APEX users will need to be created.
+
+Primary ones to create
+- DAUSTIN
+- SMAVRIS
+- JDOE - used for testing "those without roles"
 
 (TODO: bulk script for adding/removing all `HR.EMPLOYEES.EMAIL` users)
 
 # RAS Basics
 
-Real Application Security (RAS) adds a layer of security on top of the basic DB `grant` privileges. Like Virtual Private Database (VPD), RAS is used for Row Level Security (RLS) and Column Protection.
+Real Application Security (RAS) adds a layer of security on top of the basic DB `grant` privileges. Like Virtual Private Database (VPD), RAS is used for both Row Level Security (RLS) and Column Masking.
 
-Unlike VPD, RAS uses an additional stateless session (RAS Session) on top of a regular DB Connection.  This allows stateless applications (eg APEX) to manage stateless connections for many active users (without having to Initialize and Cleanup a DB Connection)
+Unlike VPD, RAS uses an additional stateless session (RAS Session) on top of a regular DB Connection.  This allows stateless applications (eg APEX) to manage stateless connections for many active users (without having to run the Initialize and Cleanup code for each DB Call)
 
 With Dynamic Application Roles, the Application defines who gets which Role *at runtime* while the Database only enforces those grants.
 
-Additionally, RAS provides Namespaces variables and Cookies on a per RAS Session basis.  This allows for the Database security rules to be Application Agnostic.
+Additionally, RAS provides Namespaces variables and Cookies on a per RAS Session basis.  This allows for the Database security rules to be defined in an Application Agnostic way.
 
 ## VPD vs RAS vs APEX with RAS
 
-The following is for relating VPD with RAS and describes "shortcuts" that can be used when using APEX.
+The following is for relating VPD with RAS and describes "shortcuts" that can be used when using building APEX+RAS Only applications.
 
 Purpose | VPD | RAS | APEX with RAS
 ---|---|---|---
-Session info | `context` | Namespace | `P0` Item
+Session info | `context` | Namespace | Application Item
 Define Domain | `sys_context()` | `xs_sys_context()` | `v()` or `nv()`
 Initialization | logon trigger | Global Callback |  `Post-Authentication Procedure`
 Users | DB | RAS + DB must match | RAS User + `APP_USER` must match(*)
 Static Roles | DB Roles | DB Roles & App Roles | DB Roles & App Roles
 Dynamic Roles | n/a | Dynamic App Roles | Dynamic App Roles
 
-(*) RAS Allows undefined External Users (possibly LDAP users too)
+(*) RAS Allows undefined External Users. In this case, `APP_USER` *is* the RAS User
 
-Within APEX, Dynamic Application Roles on the right side are enabled within the `RAS Mode` settings or are enabled within the `Post-Authentication Procedure`.
+Within APEX, Dynamic Application Roles on the right side are enabled within the `RAS Mode` settings or are enabled within the `Post-Authentication Procedure` via `apex_authorization.enable_group_roles()`.
 
 ## RAS Objects
 
-The three primary components are Priveleges, Principals (users/roles), and Domain (Rows). The combined triplette is defined in a Policy and that Policy is applied to one or more Objects (Tables).  But, in order to create a Policy, various other objects need to be created.
+The three primary components within RAS are: Priveleges, Principals (users/roles), and Data Domains. The combined triplette is defined in a Policy and that Policy is applied to one or more Objects (Tables).  But, in order to create a Policy, various other objects need to be created.
 
 Object | Single | Many
 ---|---|---
@@ -121,6 +131,9 @@ Protected Columns | Custom Privilege | Columns
 Policy | Policy Name | Realms, Protected Columns
 Security Class | Security Class Name | Parent Sec. Class, Custom Privileges
 
+Some examples build the ACLs first, the Parameterized ACL example builds the Policy first.
+
+## Enforced Privileges
 
 The actual Privileges that a Principal has is the intersection of DB Privileges (`grant`), ACE Privilege, and Security Class Privilege.  If a Privilege is not granted in all of those areas, then that Privilege is not granted.  A common mistake is forgetting to `grant` the appropriate Privilege at the DB level.
 
@@ -130,23 +143,23 @@ The actual Privileges that a Principal has is the intersection of DB Privileges 
 
 RAS is not as well refined as one would like it to be.
 
-Here are a few bugs and other things that can cause you headaches
+Here are a few bugs and developer notes that can cause you headaches if you are not careful.
 
-## Headaches
+## Developer Notes
 
 - RAS prefers the Privileges to be granted to Roles instead of indivual Users.
 - DB, ACL, Security Class all need to provide the Principal the Privilege in order for Principal to do the job. Start by ensuring the DB Principal has the Privilege then ensure the ACL/ACE has the Privilege.  Start at the DB level when debuging RAS RLS problems.
-- When using SQL in code, make sure you understand the difference between Invoker's Rights and Definer's Rights.  SQL Prompt will have DEFAULT Roles enabled when you directly login.  DBA can `alter user` and make RAS roles "not default".
-- Trying to temporary grant Privileges when withing your code via CBAC will invoke CVE-2023-21829. make sure your server is patched first.
+- When using SQL in code, make sure you understand the difference between Invoker's Rights and Definer's Rights.
+- SQL Prompt (SQL Plus, SQLcl, SQL Developer, etc.) will have DEFAULT Roles enabled when you directly login.  DBA can `alter user` and make those roles "not default".
+- You can use a DB Role as a Principal and then `grant` that role to code (CBAC). It this way, your code will have different Privileges then the user. However, this pattern will invoke CVE-2023-21829. make sure your server is patched first (CPU 17-Jan-2024).
 - Beware of which functions require Case Sensitive names and which Case they expect.
 - A few Data Dictionary views regarding RAS are either missing or are incorrect. You can hunt for them, but many of the `xs$` views are inaccessible by ADMIN on ATP Free Tier.
 - APEX Session:RAS Session are 1:1
 - Initialize everything (Roles, Namespaces, `APP_USER`) in the `Post-Authentication Procedure`.
-- If you are using External Users, you need to have *at least* one Application Role enabled.
+- If you are using External Users, you need to have *at least* one Internal Application Role enabled.
 - If you are using Internal Users, the RAS User needs to exist and match `APP_USER`
 - You'll need to copy & Modify templates (...) to display a different name then `APP_USER`
 - xxx needs to be adjusted to use Dynamic Application Roles
-  - (suspected) You can use either Internal Application Roles or External Application roles but not both.
   - Internal Dynamic Application Roles require the setting to be `something`
   - unknown what is required for External Roles (most likely `theLastValue`)
 - When creating ACEs whose Principal is a non-Internal RAS Principal, be sure to set the correct `principal_type`.
@@ -161,7 +174,7 @@ Here are a few bugs and other things that can cause you headaches
 
 Flag | Description
 ---|---
-❗ | Security Flaw (requires CPU to avoid)
+❗ | Security Flaw (requires you to apply CPU)
 ⚠️ | Can make APEX unusable
 🐜 | Bug or suspected Bug
 📖 | Documentation missinformation
@@ -170,15 +183,16 @@ Flag | Description
 
 Flag | Catagory | bug id | Description
 ---|---|---|---
-❗ | CBAC+RAS | CVE-2023-21829 | ACL privileges granted to code (CBAC) is not revoked on exit of code. patch is available in the CPU released on 17-Jan-2023. (19c, 21c)
+❗ | CBAC+RAS | CVE-2023-21829 | ACL privileges granted to code (CBAC) is not revoked on exit of code. patch is available in the CPU released on 17-Jan-2023. (19c, 21c). 23c is expected to be patched.
 ⚠️ | APEX | - | A hiccup can occur in APEX if a RAS Session can not be completely created causing DoS
-⚠️ | APEX | - | `RAS Mode -> Enable External` requires at least 1 enabled dynamic role (this is may be a 🐜)
+⚠️ | APEX | - | `RAS Mode -> Enable External` requires at least 1 enabled dynamic role
 🐜 | OCI | - | the view `dba_xs_privilege_grants` is incorrect (possibly OCI specific)
 🐜 | RAS | - | Data Dictionary View for Global Callbacks is missing (not just undocumented)
 🐜 | CBAC | - | A code's granted role (CBAC) can be lost on `create or replace`
 🐜 | RAS | - | make sure your Namespace is UPPER (for non xs$session namespaces) when you call `xs_sys_context`
 🐜 | APEX | - | make sure your Role name is UPPER when you call `apex_authorization.enable_dynamic_roles`
-🐜 | APEX | - | `apex_authorization.enable_dynamic_roles` does not appear to enable External Roles as per documentation (todo check setting)
+🐜 | APEX | - | `apex_authorization.enable_dynamic_roles` does not appear to enable External Roles as per documentation (fixed in APEX 22.2.2)
+🐜 | APEX | - | When you define an Authorization Schem with "Is In Role or Group", the name needs to be UPPER
 🐜 | APEX | - | ending of a RAS Session is delayed when you exit an APEX Session.
 📖 | Doc | - | List of Events for procedure `dbms_xs_session.add_global_callback` (and related procedures) do not match constants in the specification of `dbms_xs_session`
 
