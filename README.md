@@ -32,7 +32,8 @@ Order | Folder | Description
 4 | [Parameterized ACL](./Parameterized%20ACL/README.md) | Base RAS HR Demo using Parametereized ACLs
 5 | [Dynamic Roles](./Dynamic%20Roles/README.md) | APEX Application demonstrating the use of RAS External users and dynamic application roles
 7 | [External Roles](./External%20Roles/README.md) | RAS HR Demo using External Roles & Namespaces
-8 | [Azure AD](./Azure/README.md) | APEX Application demonstrating RAS External Roles defined in Azure
+8 | [Social Sign-In](./Social%20Sign-in/README.md) | APEX Application demonstrating RAS External Users and Google Authentication
+9 | [Azure AD](./Azure/README.md) | APEX Application demonstrating RAS External Roles defined in Azure Authentication/Authorization
 
 
 # Common APEX Prep Steps
