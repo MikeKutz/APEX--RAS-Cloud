@@ -32,8 +32,8 @@ Order | Folder | Description
 4 | [Parameterized ACL](./Parameterized%20ACL/README.md) | Base RAS HR Demo using Parametereized ACLs
 5 | [Dynamic Roles](./Dynamic%20Roles/README.md) | APEX Application demonstrating the use of RAS External users and dynamic application roles
 7 | [External Roles](./External%20Roles/README.md) | RAS HR Demo using External Roles & Namespaces
-8 | LDAP RAS | (planned) RAS using LDAP DN
-9 | LDAP APEX | (planned) RAS+APEX using LDAP DN
+8 | [Azure AD](./Azure/README.md) | APEX Application demonstrating RAS External Roles defined in Azure
+
 
 # Common APEX Prep Steps
 
