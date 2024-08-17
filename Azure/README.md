@@ -45,7 +45,7 @@ as
 begin
     -- set token for REST call
     rest_p(1) := 'Authorization';
-    rest_v(1) := trim( apex_json.get_clob('access_token') ); -- bug : you need to trim() the key
+    rest_v(1) := trim( apex_json.get_clob('access_token') ); -- bug : you need to trim() the key (fixed APEX 23.1)
 
     -- make REST Call
     l_clob := apex_web_service.make_rest_request(

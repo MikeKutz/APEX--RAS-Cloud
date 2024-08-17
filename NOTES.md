@@ -80,26 +80,29 @@ XAPEX | you can adjust the `USER_ID` in the `Post-Authentication Procedure` with
 
 Flag | Description
 ---|---
-â— | Security Flaw (requires CPU to avoid)
-âš ï¸ | Can make APEX unusable
-ðŸœ | Bug or suspected Bug
+â?— | Security Flaw (requires CPU to avoid)
+âš ï¸? | Can make APEX unusable
+ðŸ?œ | Bug or suspected Bug
 ðŸ“– | Documentation missinformation
 
 ### Bugs
 
 Flag | Catagory | bug id | Description
 ---|---|---|---
-â— | CBAC+RAS | CVE-2023-21829 | ACL privileges granted to code (CBAC) is not revoked on exit of code. patch is available in the CPU released on 17-Jan-2023. (19c, 21c)
-âš ï¸ | APEX | - | A hiccup can occur in APEX if a RAS Session can not be completely created causing DoS
-âš ï¸ | APEX | - | `RAS Mode -> Enable External` requires at least 1 enabled dynamic role (this is may be a ðŸœ)
-ðŸœ | OCI | - | the view `dba_xs_privilege_grants` is incorrect (possibly OCI specific)
-ðŸœ | RAS | - | Data Dictionary View for Global Callbacks is missing (not just undocumented)
-ðŸœ | CBAC | - | A code's granted role (CBAC) can be lost on `create or replace`
-ðŸœ | RAS | - | make sure your Namespace is UPPER (for non xs$session namespaces) when you call `xs_sys_context`
-ðŸœ | APEX | - | make sure your Role name is UPPER when you call `apex_authorization.enable_dynamic_roles`
-ðŸœ | APEX | - | `apex_authorization.enable_dynamic_roles` does not appear to enable External Roles as per documentation
-ðŸœ | APEX | - | ending of a RAS Session is delayed when you exit an APEX Session.
+â?— | CBAC+RAS | CVE-2023-21829 | ACL privileges granted to code (CBAC) is not revoked on exit of code. patch is available in the CPU released on 17-Jan-2023. (19c, 21c)
+âš ï¸? | APEX | - | A hiccup can occur in APEX if a RAS Session can not be completely created causing DoS
+âš ï¸? | APEX | - | `RAS Mode -> Enable External` requires at least 1 enabled dynamic role (this is may be a ðŸ?œ)
+ðŸ?œ | OCI | - | the view `dba_xs_privilege_grants` is incorrect (possibly OCI specific)
+ðŸ?œ | RAS | - | Data Dictionary View for Global Callbacks is missing (not just undocumented)
+ðŸ?œ | CBAC | - | A code's granted role (CBAC) can be lost on `create or replace`
+ðŸ?œ | RAS | - | make sure your Namespace is UPPER (for non xs$session namespaces) when you call `xs_sys_context`
+ðŸ?œ | APEX | - | make sure your Role name is UPPER when you call `apex_authorization.enable_dynamic_roles`
+ðŸ?œ | APEX | - | `apex_authorization.enable_dynamic_roles` does not appear to enable External Roles as per documentation
+ðŸ?œ | APEX | - | ending of a RAS Session is delayed when you exit an APEX Session.
 ðŸ“– | Doc | - | List of Events for procedure `dbms_xs_session.add_global_callback` (and related procedures) do not match constants in specification of `dbms_xs_session`
+---- | APEX | 22.2.2 | External roles are not enabled
+---- | APEX | 22.2.2 | "Is in Role or Group" must be UPPER (fixed for External roles)
+---- | RAS | - | Realm can't reference invisible columns
 
 ## Other Notes
 

@@ -1,3 +1,5 @@
+create role cbac_role;
+
 declare
 begin
   sys.xs_security_class.create_security_class(
@@ -44,13 +46,13 @@ begin
                     sec_class => 'hr_privileges');
 
   -- for testing S1607572
-  aces(1):= xs$ace_type(privilege_list => xs$name_list('select'),
-                        principal_name => 'CBAC_ROLE',
-                        principal_type => 2);
- 
-  sys.xs_acl.create_acl(name      => 'cbac_acl',
-                    ace_list  => aces,
-                    sec_class => 'hr_privileges');
+--  aces(1):= xs$ace_type(privilege_list => xs$name_list('select'),
+--                        principal_name => 'CBAC_ROLE',
+--                        principal_type => 2);
+-- 
+--  sys.xs_acl.create_acl(name      => 'cbac_acl',
+--                    ace_list  => aces,
+--                    sec_class => 'hr_privileges');
 end;
 /
 
@@ -63,21 +65,22 @@ begin
   -- Realm #1: Only the employee's own record. 
   --           The EMPLOYEE role can view the realm including SALARY column.     
   realms(1) := xs$realm_constraint_type(
-    realm    => q'[email = nvl(xs_sys_context('xs$session','username'), 'SKING')]',
+    realm    => q'[email = xs_sys_context('xs$session','username')]',
 --    realm    => q'[email = xs_sys_context('xs$session','username')]',
     acl_list => xs$name_list('emp_acl'));
  
   -- Realm #2: The records in the IT department.
   --           The IT_ENGINEER role can view the realm excluding SALARY column.
   realms(2) := xs$realm_constraint_type(
-    realm    => 'department_id = 60',
+    realm    => 'department_id = hr.departments_d.it_engineer',
+    -- realm    => 'department_id = 60',
     acl_list => xs$name_list('it_acl'));
  
   -- Realm #3: All the records.
   --           The HR_REPRESENTATIVE role can view and update the realm including SALARY column.
   realms(3) := xs$realm_constraint_type(
     realm    => '1 = 1',
-    acl_list => xs$name_list('hr_acl','cbac_acl')); -- added cbac_acl for testing S1607572
+    acl_list => xs$name_list('hr_acl')); -- added cbac_acl for testing S1607572
  
   -- Column constraint protects SALARY column by requiring VIEW_SALARY 
   -- privilege.

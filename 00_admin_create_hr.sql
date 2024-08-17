@@ -33,4 +33,6 @@ drop procedure secure_dml;
 
 -- common DB Roles
 create role db_emp;
-grant select, insert, update, delete on hr.employees to db_emp; 
+grant select, insert, update, delete on hr.employees to db_emp;
+create role cbac_role;
+
