@@ -25,7 +25,7 @@ begin
       parent_list := new xs$name_list();
       
       parent_list.extend(1);
-      parent_list( parent_list.last ) := 'dml';
+      parent_list( parent_list.last ) := 'sys.dml';
       
     
       sys.xs_security_class.create_security_class( name => 'status_SecClass'
@@ -76,6 +76,7 @@ begin
     
     ace := new xs$ace_type( privilege_list => priv
         ,principal_name => 'show_new_db'
+                         -- SHOW_NEW_DB 
         ,principal_type => 2
        );
     
@@ -87,6 +88,7 @@ begin
     sys.xs_acl.create_acl( name => 'show_new_acl'
                           ,ace_list => aces
                           ,sec_class => 'status_SecClass' );
+                          --             STATUS_SECCLASS
 end make_acl;
 /
 
@@ -230,11 +232,22 @@ begin
     -- Row Level policy
     acls := new xs$name_list();
     acls.extend(1);
-    acls( acls.last ) := 'ahow_all_acl';
+    acls( acls.last ) := 'show_all_acl';
     
     realms.extend(1);
     realms( realms.last ) := new xs$realm_constraint_type(
-        realm     => q'?true?'
+        realm     => q'?1 = 1?'
+      ,acl_list  => acls
+      ,is_static => false
+    );
+    -- Row Level policy
+    acls := new xs$name_list();
+    acls.extend(1);
+    acls( acls.last ) := 'show_active_acl';
+    
+    realms.extend(1);
+    realms( realms.last ) := new xs$realm_constraint_type(
+        realm     => q'?some_state != 2?'
       ,acl_list  => acls
       ,is_static => false
     );
@@ -242,10 +255,12 @@ begin
     acls := new xs$name_list();
     acls.extend(1);
     acls( acls.last ) := 'show_new_acl';
+                      --  show_new_acl
     
     realms.extend(1);
     realms( realms.last ) := new xs$realm_constraint_type(
-        realm     => q'?some_state != hr.status_d.deprecated ) acls ( show_active_acl , rls domain ( some_state = hr.status_d.ininitializing?'
+        realm     => q'?some_state = hr.status_d.initializing?'
+--        realm     => q'?some_state = 1?'
       ,acl_list  => acls
       ,is_static => false
     );
@@ -269,14 +284,28 @@ begin
     **/
     
     xs_data_security.apply_object_policy(
-         policy        => 'satus_policy'
-        ,schema        => user
-        ,object        => 'ttt'
+         policy        => 'status_policy'
+                        -- status_policy
+        ,schema        => 'HR'
+        ,object        => 'test_hidden'
+        --                 test_hidden
         ,row_acl       => false
         ,owner_bypass  => false
         ,statement_types => null -- todo
-        ,aclmv           => trim( '' )
       );
 end alter_table;
 /
 
+
+
+begin
+  if (sys.xs_diag.validate_workspace()) then
+    dbms_output.put_line('All configurations are correct.');
+  else
+    dbms_output.put_line('Some configurations are incorrect.');
+  end if;
+end;
+/
+-- XS$VALIDATION_TABLE contains validation errors if any.
+-- Expect no rows selected.
+select * from xs$validation_table order by 1, 2, 3, 4;

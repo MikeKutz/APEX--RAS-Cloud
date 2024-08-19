@@ -20,3 +20,7 @@ select mod(level - 1,5) + 1, trunc(sysdate) + level
 from dual connect by level <= 200;
 
 commit;
+
+grant insert,select,update,delete on test_hidden to show_new_db;
+grant select,update on test_hidden to show_active_db;
+grant select on test_hidden to show_all_db;
